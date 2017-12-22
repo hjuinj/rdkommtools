@@ -1,0 +1,42 @@
+package:
+  name: rdkommtools
+  version: {{ environ['VERSION'] }}
+  license_file: '{{ environ["RECIPE_DIR"] }}/LICENSE'
+
+source:
+  path: ../../
+
+build:
+  preserve_egg_dir: True
+  number: 0
+
+requirements:
+  build:
+    - python
+    - pytest
+    - setuptools
+    - numpy
+    - numpydoc
+    - openmm
+    - pyparsing
+    - packmol
+    - parmed
+  run:
+    - python
+    - pytest
+    - setuptools
+    - numpy
+    - numpydoc
+    - openmm
+    - pyparsing
+    - packmol
+    - parmed
+
+test:
+  requires:
+    - pytest
+  imports:
+    - rdkommtools
+
+about:
+  home: https://github.com/hjuinj/rdkommtools
