@@ -1,4 +1,8 @@
 from __future__ import division, absolute_imports, print_function
+"""
+openmoltools wrapper for packmol ? https://github.com/choderalab/openmoltools
+"""
+
 def oesolvate(solute, density=1.0, padding_distance=10.0,
               distance_between_atoms=2.5,
               solvents='[H]O[H]', molar_fractions='1.0',
