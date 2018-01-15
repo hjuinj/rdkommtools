@@ -1,6 +1,34 @@
 from __future__ import division, absolute_imports, print_function
+from rdkit import Chem
+from simtk.openmm import app, Vec3
+from simtk import unit
+import itertools
+import pyparsing as pyp
+
+proteinResidues = ['ALA', 'ASN', 'CYS', 'GLU', 'HIS',
+                   'LEU', 'MET', 'PRO', 'THR', 'TYR',
+                   'ARG', 'ASP', 'GLN', 'GLY', 'ILE',
+                   'LYS', 'PHE', 'SER', 'TRP', 'VAL']
+
+rnaResidues = ['A', 'G', 'C', 'U', 'I']
+dnaResidues = ['DA', 'DG', 'DC', 'DT', 'DI']
 
 def rdkmol_to_openmmTop(mol):
+        """
+    This function converts an rdkmol to an openmm topology
+    The rdkmol coordinates are assumed to be in Angstrom unit
+    Parameters:
+    -----------
+    mol: rdkmol molecule
+        The molecule to convert
+    Return:
+    -------
+    topology : OpenMM Topology
+        The generated OpenMM topology
+    positions : OpenMM Quantity
+        The molecule atom positions associated with the
+        generated topology in Angstrom units
+    """
     #TODO
 
 def openmmTop_to_rdkmol(topology, positions, verbose = False):
