@@ -1,4 +1,4 @@
-from __future__ import division, absolute_imports, print_function
+from __future__ import division, absolute_import, print_function
 from rdkit import Chem, Geometry
 from simtk.openmm import app, Vec3
 from simtk import unit
@@ -15,7 +15,7 @@ rnaResidues = ['A', 'G', 'C', 'U', 'I']
 dnaResidues = ['DA', 'DG', 'DC', 'DT', 'DI']
 
 def rdmol_to_openmmTop(mol, confId = 0):
-        """
+    """
     This function converts an rdmol to an openmm topology
     The rdmol coordinates are assumed to be in Angstrom unit
     Parameters:
@@ -82,7 +82,7 @@ def rdmol_to_openmmTop(mol, confId = 0):
             return False
 
         # Select Carbon and Nitrogen atoms
-        if atomB.GetAtomicNum() === 6 :
+        if atomB.GetAtomicNum() == 6 :
             C_atom = atomB
             N_atom = atomE
         else:
@@ -132,11 +132,11 @@ def rdmol_to_openmmTop(mol, confId = 0):
         else:
             omm_bond_type = None
 
-        topology.AddBond(
+        topology.addBond(
             rdk_atom_to_openmm[bond.GetBeginAtom().GetIdx()],
             rdk_atom_to_openmm[bond.GetEndAtom().GetIdx()],
             type = omm_bond_type,
-            order = bond_order #CESHI the bond order calculated is a double, supposedly OpenMM takes an int value
+            order = bond_order) #CESHI the bond order calculated is a double, supposedly OpenMM takes an int value
 
     if omm_bond_count != mol.GetNumBonds():
         raise ValueError("OpenMM topology and RDMol number of bonds mismatching: "
@@ -174,13 +174,16 @@ def openmmTop_to_rdmol(topology, positions, verbose = False):
     for chain in topology.chains():
         chainId = str(chain.id)
         for res in chain.residues():
-            resName, resNum= res.name, int(res.idx)
+            resName, resNum= res.name, int(res.index)
             for openmm_at in res.atoms():
                 rdatom = Chem.Atom(openmm_at.element._atomic_number)
-                rdatom.GetPDBResidueInfo().SetName(openmm_at.name)
-                rdatom.GetPDBResidueInfo().SetChainId(chainId)
-                rdatom.GetPDBResidueInfo().SetResidueNumber(resNum)
-                rdatom.GetPDBResidueInfo().SetResidueName(resName)
+                info = Chem.AtomPDBResidueInfo()
+                info.SetName(openmm_at.name)
+                info.SetChainId(chainId)
+                info.SetResidueNumber(resNum)
+                info.SetResidueName(resName)
+
+                rdatom.SetMonomerInfo(info)
 
                 if resName not in keep:
                     rdatom.SetIsHeteroAtom()
@@ -235,8 +238,9 @@ def openmmTop_to_rdmol(topology, positions, verbose = False):
     pos = positions.in_units_of(unit.angstrom) / unit.angstrom
     conformer = Chem.Conformer()
 
-    for idx,coord in enumerate(positions):
-        x,y,z = [i._value for i in coord]
+    for idx,coord in enumerate(pos):
+        # x,y,z = [i._value for i in coord]
+        x,y,z = [i for i in coord]
         conformer.SetAtomPosition(idx, Geometry.Point3D(x,y,z))
 
     rdmol.AddConformer(conformer)
@@ -245,8 +249,6 @@ def openmmTop_to_rdmol(topology, positions, verbose = False):
     Chem.GetSSSR(rdmol)
 
     return rdmol.GetMol()
-
-
 
 
 def delete_shell(core_mol, del_mol, cut_off, in_out='in'):
